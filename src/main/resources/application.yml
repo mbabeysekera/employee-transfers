@@ -1,0 +1,47 @@
+app:
+  api:
+    version: v0.1
+  databaseURL: jdbc:postgresql://192.168.206.128:5432/app_db?useSSL=false&serverTimezone=Asia/Colombo
+
+web:
+  cors:
+    allowed-origins: http://localhost
+    allowed-methods: GET, POST, PUT, DELETE
+    max-age: 3600
+    allowed-headers: "Requester-Type"
+    exposed-headers: "X-Get-Header"
+
+spring:
+  jackson:
+    time-zone:
+      Asia/Colombo
+  application:
+    name: employee-transfers
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    username: developer
+    password: app_db_psw
+    url: jdbc:postgresql://192.168.206.128:5432/app_db?useSSL=false&serverTimezone=Asia/Colombo
+  jpa:
+    database: POSTGRESQL
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: false
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: ALWAYS
+  profiles:
+    active:
+      - default
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  packages-to-scan:
+    - com.jobfinder.api.employee_transfers
+
+server:
+  port: 8081
+  servlet:
+    context-path: /${app.api.version}/${spring.application.name}
