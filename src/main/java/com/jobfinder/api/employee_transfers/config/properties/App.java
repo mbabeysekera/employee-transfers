@@ -1,6 +1,5 @@
 package com.jobfinder.api.employee_transfers.config.properties;
 
-import com.jobfinder.api.employee_transfers.config.properties.API;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,13 +1,9 @@
 package com.jobfinder.api.employee_transfers.model.common;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
 @Table(schema = "common", name = "cities")
 public class CityModel {
@@ -18,4 +14,8 @@ public class CityModel {
 
     @Column(name = "city")
     private String city;
+
+    public CityModel(String city) {
+        this.city = city;
+    }
 }

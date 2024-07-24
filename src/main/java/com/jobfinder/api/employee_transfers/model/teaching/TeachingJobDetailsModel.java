@@ -1,14 +1,12 @@
 package com.jobfinder.api.employee_transfers.model.teaching;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@Builder
 @Table(schema = "teaching", name = "teaching_job_details")
 public class TeachingJobDetailsModel {
     @Id
@@ -42,4 +40,5 @@ public class TeachingJobDetailsModel {
 
     @Column(name = "ternary_subject_for_a_level")
     private String ternarySubjectForALevel;
+
 }
