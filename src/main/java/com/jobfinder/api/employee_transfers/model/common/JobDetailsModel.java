@@ -5,14 +5,12 @@ import com.jobfinder.api.employee_transfers.constant.JobCategory;
 import com.jobfinder.api.employee_transfers.constant.SeniorityGrade;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Entity
-@AllArgsConstructor
-@NoArgsConstructor
 @Data
+@Builder
 @Table(schema = "common", name = "job_details")
 public class JobDetailsModel {
     @Id
@@ -74,8 +72,4 @@ public class JobDetailsModel {
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
     private JobCategory category;
-
-    @NotNull
-    @Column(name = "job_details_id")
-    private int jobDetailsId;
 }

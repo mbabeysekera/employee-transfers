@@ -6,11 +6,13 @@ import com.jobfinder.api.employee_transfers.constant.JobCategory;
 import com.jobfinder.api.employee_transfers.constant.SeniorityGrade;
 import com.jobfinder.api.employee_transfers.dto.teaching.TeachingJobDetailsDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class JobDetailsDto {
     private int userId;
     private SeniorityGrade seniority;

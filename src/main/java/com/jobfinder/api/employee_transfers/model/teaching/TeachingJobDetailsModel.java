@@ -14,6 +14,9 @@ public class TeachingJobDetailsModel {
     @Column(name = "id")
     private int id;
 
+    @Column(name = "user_id")
+    private int userId;
+
     @Column(name = "primary_subject_for_primary_level")
     private String primarySubjectForPLevel;
 

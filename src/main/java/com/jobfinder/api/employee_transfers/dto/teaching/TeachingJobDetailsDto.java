@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeachingJobDetailsDto {
+    private int userId;
     private String primarySubjectForPLevel;
     private String secondarySubjectForPLevel;
     private String ternarySubjectForPLevel;

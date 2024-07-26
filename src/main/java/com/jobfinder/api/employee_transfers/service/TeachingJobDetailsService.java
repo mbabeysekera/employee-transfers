@@ -4,9 +4,11 @@ import com.jobfinder.api.employee_transfers.dto.teaching.TeachingJobDetailsDto;
 import com.jobfinder.api.employee_transfers.model.teaching.TeachingJobDetailsModel;
 import com.jobfinder.api.employee_transfers.repository.teaching.TeachingJobDetailsRepository;
 import com.jobfinder.api.employee_transfers.service.teaching.TeachingJobDetailsServiceInterface;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class TeachingJobDetailsService implements TeachingJobDetailsServiceInterface {
 
     private final TeachingJobDetailsRepository teachingJobDetailsRepository;
@@ -18,6 +20,7 @@ public class TeachingJobDetailsService implements TeachingJobDetailsServiceInter
     @Override
     public void createJobDetails(TeachingJobDetailsDto jobDetails) {
         this.teachingJobDetailsRepository.save(TeachingJobDetailsModel.builder()
+                .userId(jobDetails.getUserId())
                 .primarySubjectForALevel(jobDetails.getPrimarySubjectForALevel())
                 .secondarySubjectForALevel(jobDetails.getSecondarySubjectForALevel())
                 .ternarySubjectForALevel(jobDetails.getTernarySubjectForALevel())
@@ -33,7 +36,8 @@ public class TeachingJobDetailsService implements TeachingJobDetailsServiceInter
 
     @Override
     public TeachingJobDetailsDto getJobDetailsForUser(int jobDetailsId) {
-        Optional<TeachingJobDetailsModel> teachingJobDetails = this.teachingJobDetailsRepository.findById(jobDetailsId);
+        Optional<TeachingJobDetailsModel> teachingJobDetails
+                = this.teachingJobDetailsRepository.findByUserId(jobDetailsId);
         if (teachingJobDetails.isEmpty()) {
             return new TeachingJobDetailsDto();
         }
@@ -52,6 +56,6 @@ public class TeachingJobDetailsService implements TeachingJobDetailsServiceInter
 
     @Override
     public void deleteJobDetailsOfUser(int jobDetailsId) {
-        this.teachingJobDetailsRepository.deleteById(jobDetailsId);
+        this.teachingJobDetailsRepository.deleteByUserId(jobDetailsId);
     }
 }

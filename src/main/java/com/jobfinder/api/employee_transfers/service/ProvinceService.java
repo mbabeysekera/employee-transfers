@@ -3,9 +3,11 @@ package com.jobfinder.api.employee_transfers.service;
 import com.jobfinder.api.employee_transfers.model.common.ProvinceModel;
 import com.jobfinder.api.employee_transfers.repository.common.ProvinceRepository;
 import com.jobfinder.api.employee_transfers.service.common.ProvinceServiceInterface;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Service
 public class ProvinceService implements ProvinceServiceInterface {
 
     private final ProvinceRepository provinceRepository;
