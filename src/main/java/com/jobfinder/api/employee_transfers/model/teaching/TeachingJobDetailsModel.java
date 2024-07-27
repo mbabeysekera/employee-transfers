@@ -1,13 +1,17 @@
 package com.jobfinder.api.employee_transfers.model.teaching;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Builder
 @Table(schema = "teaching", name = "teaching_job_details")
+@AllArgsConstructor
+@NoArgsConstructor
 public class TeachingJobDetailsModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

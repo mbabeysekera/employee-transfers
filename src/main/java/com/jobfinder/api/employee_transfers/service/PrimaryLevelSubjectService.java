@@ -1,16 +1,18 @@
 package com.jobfinder.api.employee_transfers.service;
 
-import com.jobfinder.api.employee_transfers.dto.teaching.PrimaryLevelSubjectDto;
+import com.jobfinder.api.employee_transfers.constant.ResponseStatusMessages;
+import com.jobfinder.api.employee_transfers.dto.teaching.SubjectDto;
 import com.jobfinder.api.employee_transfers.model.teaching.PrimaryLevelSubjectModel;
 import com.jobfinder.api.employee_transfers.repository.teaching.PrimaryLevelSubjectRepository;
 import com.jobfinder.api.employee_transfers.service.teaching.PrimaryLevelSubjectServiceInterface;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
+@Log4j2
 @Service
 public class PrimaryLevelSubjectService implements PrimaryLevelSubjectServiceInterface {
 
@@ -22,32 +24,41 @@ public class PrimaryLevelSubjectService implements PrimaryLevelSubjectServiceInt
 
     @Override
     public String getSubject(int subjectId) {
+        log.info("Fetch primary level subject for ID: {}", subjectId);
         Optional<PrimaryLevelSubjectModel> primaryLevelSubject = this.primaryLevelSubjectRepository.findById(subjectId);
         if (primaryLevelSubject.isEmpty()) {
+            log.info("Subject does not exists for ID: {}", subjectId);
             return "";
         }
+        log.info("Fetching primary level subject for ID: {}", ResponseStatusMessages.SUCCESS);
         return primaryLevelSubject.get().getSubject();
     }
 
     @Override
-    public List<PrimaryLevelSubjectDto> getSubjects() {
+    public List<SubjectDto> getSubjects() {
+        log.info("Prepare primary level subjects");
         List<PrimaryLevelSubjectModel> primaryLevelSubjects = this.primaryLevelSubjectRepository.findAll();
         if (primaryLevelSubjects.isEmpty()) {
             return new ArrayList<>();
         }
-        return primaryLevelSubjects.stream().map(primaryLevelSubjectModel -> new PrimaryLevelSubjectDto(
+        log.info("Fetching primary level subjects: {}", ResponseStatusMessages.SUCCESS);
+        return primaryLevelSubjects.stream().map(primaryLevelSubjectModel -> new SubjectDto(
                 primaryLevelSubjectModel.getId(),
                 primaryLevelSubjectModel.getSubject()
-        )).collect(Collectors.toList());
+        )).toList();
     }
 
     @Override
     public void createSubject(String subject) {
+        log.info("Add primary level subject: {}.", subject);
         this.primaryLevelSubjectRepository.save(new PrimaryLevelSubjectModel(subject));
+        log.info("Creating primary level subject: {}.", ResponseStatusMessages.SUCCESS);
     }
 
     @Override
     public void deleteSubject(int subjectId) {
+        log.info("Delete primary level subject for ID: {}.", subjectId);
         this.primaryLevelSubjectRepository.deleteById(subjectId);
+        log.info("Deleting primary level subject: {}.", ResponseStatusMessages.SUCCESS);
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(schema = "teaching", name = "ol_subjects")
 public class OrdinaryLevelSubjectModel {

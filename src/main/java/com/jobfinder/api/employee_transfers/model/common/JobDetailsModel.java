@@ -5,13 +5,17 @@ import com.jobfinder.api.employee_transfers.constant.JobCategory;
 import com.jobfinder.api.employee_transfers.constant.SeniorityGrade;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Data
 @Builder
 @Table(schema = "common", name = "job_details")
+@AllArgsConstructor
+@NoArgsConstructor
 public class JobDetailsModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
