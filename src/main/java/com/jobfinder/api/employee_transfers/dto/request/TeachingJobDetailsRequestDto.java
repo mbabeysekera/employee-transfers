@@ -1,4 +1,4 @@
-package com.jobfinder.api.employee_transfers.dto.teaching;
+package com.jobfinder.api.employee_transfers.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,11 +8,10 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TeachingJobDetailsDto {
-    private int userId;
+@Builder
+public class TeachingJobDetailsRequestDto {
     private String primarySubjectForPLevel;
     private String secondarySubjectForPLevel;
     private String ternarySubjectForPLevel;

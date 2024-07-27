@@ -1,14 +1,16 @@
 package com.jobfinder.api.employee_transfers.model.common;
 
-import com.jobfinder.api.employee_transfers.constant.EducationQualification;
-import com.jobfinder.api.employee_transfers.constant.JobCategory;
-import com.jobfinder.api.employee_transfers.constant.SeniorityGrade;
+import com.jobfinder.api.employee_transfers.constant.enums.EducationQualification;
+import com.jobfinder.api.employee_transfers.constant.enums.JobCategory;
+import com.jobfinder.api.employee_transfers.constant.enums.SeniorityGrade;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Data
@@ -76,4 +78,8 @@ public class JobDetailsModel {
     @Column(name = "category")
     @Enumerated(EnumType.STRING)
     private JobCategory category;
+
+    @NotNull
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 }

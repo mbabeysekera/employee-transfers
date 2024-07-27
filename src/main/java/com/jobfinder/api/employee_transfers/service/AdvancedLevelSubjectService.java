@@ -31,7 +31,7 @@ public class AdvancedLevelSubjectService implements AdvancedLevelSubjectServiceI
             log.info("Subject does not exists for ID: {}", subjectId);
             return "";
         }
-        log.info("Fetching advanced level subject for ID: {}", ResponseStatusMessages.SUCCESS);
+        log.info("Fetching advanced level subject: {} {}.", subjectId,  ResponseStatusMessages.SUCCESS);
         return advancedLevelSubject.get().getSubject();
     }
 
@@ -40,6 +40,7 @@ public class AdvancedLevelSubjectService implements AdvancedLevelSubjectServiceI
         log.info("Prepare advanced level subjects");
         List<AdvancedLevelSubjectModel> advanceLevelSubjects = this.advancedLevelSubjectRepository.findAll();
         if (advanceLevelSubjects.isEmpty()) {
+            log.info("Subjects not exists in the system for Advanced Level");
             return new ArrayList<>();
         }
         log.info("Fetching advanced level subjects: {}", ResponseStatusMessages.SUCCESS);
@@ -55,13 +56,13 @@ public class AdvancedLevelSubjectService implements AdvancedLevelSubjectServiceI
         this.advancedLevelSubjectRepository.save(new AdvancedLevelSubjectModel(
                 subject
         ));
-        log.info("Creating advanced level subject: {}.", ResponseStatusMessages.SUCCESS);
+        log.info("Creating advanced level subject: {} {}.", subject,  ResponseStatusMessages.SUCCESS);
     }
 
     @Override
     public void deleteSubject(int subjectId) {
         log.info("Delete advanced level subject for ID: {}.", subjectId);
         this.advancedLevelSubjectRepository.deleteById(subjectId);
-        log.info("Deleting advanced level subject: {}.", ResponseStatusMessages.SUCCESS);
+        log.info("Deleting advanced level subject: {} {}.", subjectId,  ResponseStatusMessages.SUCCESS);
     }
 }
