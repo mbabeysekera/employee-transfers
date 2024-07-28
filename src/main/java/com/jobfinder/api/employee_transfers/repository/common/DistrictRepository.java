@@ -1,9 +1,9 @@
 package com.jobfinder.api.employee_transfers.repository.common;
 
-import com.jobfinder.api.employee_transfers.model.common.DivisionModel;
+import com.jobfinder.api.employee_transfers.model.common.DistrictModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface DivisionRepository extends JpaRepository<DivisionModel, Integer> {
+public interface DistrictRepository extends JpaRepository<DistrictModel, Integer> {
 }

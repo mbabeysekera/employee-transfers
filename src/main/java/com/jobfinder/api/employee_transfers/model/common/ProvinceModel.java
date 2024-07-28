@@ -19,6 +19,9 @@ public class ProvinceModel {
     @Column(name = "province")
     private String province;
 
+    @Column(name = "capitol")
+    private String capitol;
+
     public ProvinceModel(String province) {
         this.province = province;
     }

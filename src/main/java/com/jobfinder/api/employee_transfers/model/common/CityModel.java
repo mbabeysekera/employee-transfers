@@ -19,6 +19,12 @@ public class CityModel {
     @Column(name = "city")
     private String city;
 
+    @Column(name = "latitude")
+    private Float latitude;
+
+    @Column(name = "longitude")
+    private Float longitude;
+
     public CityModel(String city) {
         this.city = city;
     }
