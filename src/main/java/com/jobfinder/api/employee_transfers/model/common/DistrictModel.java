@@ -7,19 +7,19 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Entity
-@Table(schema = "common", name = "divisions")
+@Table(schema = "common", name = "district")
 @AllArgsConstructor
 @NoArgsConstructor
-public class DivisionModel {
+public class DistrictModel {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "division")
-    private String division;
+    @Column(name = "district")
+    private String district;
 
-    public DivisionModel(String division) {
-        this.division = division;
+    public DistrictModel(String district) {
+        this.district = district;
     }
 }

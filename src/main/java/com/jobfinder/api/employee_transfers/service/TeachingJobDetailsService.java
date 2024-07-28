@@ -1,13 +1,17 @@
 package com.jobfinder.api.employee_transfers.service;
 
+import com.jobfinder.api.employee_transfers.constant.ResponseStatusMessages;
+import com.jobfinder.api.employee_transfers.dto.request.TeachingJobDetailsRequestDto;
 import com.jobfinder.api.employee_transfers.dto.teaching.TeachingJobDetailsDto;
 import com.jobfinder.api.employee_transfers.model.teaching.TeachingJobDetailsModel;
 import com.jobfinder.api.employee_transfers.repository.teaching.TeachingJobDetailsRepository;
 import com.jobfinder.api.employee_transfers.service.teaching.TeachingJobDetailsServiceInterface;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+@Log4j2
 @Service
 public class TeachingJobDetailsService implements TeachingJobDetailsServiceInterface {
 
@@ -19,6 +23,7 @@ public class TeachingJobDetailsService implements TeachingJobDetailsServiceInter
 
     @Override
     public void createJobDetails(TeachingJobDetailsDto jobDetails) {
+        log.info("Add Teaching Job Details for userID: {}.", jobDetails.getUserId());
         this.teachingJobDetailsRepository.save(TeachingJobDetailsModel.builder()
                 .userId(jobDetails.getUserId())
                 .primarySubjectForALevel(jobDetails.getPrimarySubjectForALevel())
@@ -30,18 +35,25 @@ public class TeachingJobDetailsService implements TeachingJobDetailsServiceInter
                 .primarySubjectForPLevel(jobDetails.getPrimarySubjectForPLevel())
                 .secondarySubjectForPLevel(jobDetails.getSecondarySubjectForPLevel())
                 .ternarySubjectForPLevel(jobDetails.getTernarySubjectForPLevel())
+                .createdAt(jobDetails.getCreatedAt())
                 .build()
         );
+        log.info("Adding Teaching Job Details for userID: {} {}.",
+                jobDetails.getUserId(),
+                ResponseStatusMessages.SUCCESS);
     }
 
     @Override
-    public TeachingJobDetailsDto getJobDetailsForUser(int jobDetailsId) {
+    public TeachingJobDetailsRequestDto getJobDetailsForUser(int userId) {
+        log.info("Fetch Teaching Job Details for userID: {}", userId);
         Optional<TeachingJobDetailsModel> teachingJobDetails
-                = this.teachingJobDetailsRepository.findByUserId(jobDetailsId);
+                = this.teachingJobDetailsRepository.findByUserId(userId);
         if (teachingJobDetails.isEmpty()) {
-            return new TeachingJobDetailsDto();
+            log.info("Teaching Job Details does not exists for userID: {}", userId);
+            return new TeachingJobDetailsRequestDto();
         }
-        return TeachingJobDetailsDto.builder()
+        log.info("Fetching Teaching Job Details for userID: {} {}.", userId,  ResponseStatusMessages.SUCCESS);
+        return TeachingJobDetailsRequestDto.builder()
                 .primarySubjectForALevel(teachingJobDetails.get().getPrimarySubjectForALevel())
                 .secondarySubjectForALevel(teachingJobDetails.get().getSecondarySubjectForALevel())
                 .ternarySubjectForALevel(teachingJobDetails.get().getTernarySubjectForALevel())
@@ -51,11 +63,14 @@ public class TeachingJobDetailsService implements TeachingJobDetailsServiceInter
                 .primarySubjectForPLevel(teachingJobDetails.get().getPrimarySubjectForPLevel())
                 .secondarySubjectForPLevel(teachingJobDetails.get().getSecondarySubjectForPLevel())
                 .ternarySubjectForPLevel(teachingJobDetails.get().getTernarySubjectForPLevel())
+                .createdAt(teachingJobDetails.get().getCreatedAt())
                 .build();
     }
 
     @Override
-    public void deleteJobDetailsOfUser(int jobDetailsId) {
-        this.teachingJobDetailsRepository.deleteByUserId(jobDetailsId);
+    public void deleteJobDetailsOfUser(int userId) {
+        log.info("Delete Job Details for userID for userID: {}.", userId);
+        this.teachingJobDetailsRepository.deleteByUserId(userId);
+        log.info("Deleting Job Details for userID: {} {}.", userId,  ResponseStatusMessages.SUCCESS);
     }
 }
