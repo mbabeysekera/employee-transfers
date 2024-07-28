@@ -31,7 +31,7 @@ public class OrdinaryLevelSubjectService implements OrdinaryLevelSubjectServiceI
             log.info("Subject does not exists for ID: {}", subjectId);
             return "";
         }
-        log.info("Fetching ordinary level subject for ID: {}", ResponseStatusMessages.SUCCESS);
+        log.info("Fetching ordinary level subject: {} {}.", subjectId,  ResponseStatusMessages.SUCCESS);
         return ordinaryLevelSubject.get().getSubject();
     }
 
@@ -40,6 +40,7 @@ public class OrdinaryLevelSubjectService implements OrdinaryLevelSubjectServiceI
         log.info("Prepare ordinary level subjects");
         List<OrdinaryLevelSubjectModel> ordinaryLevelSubjects = this.ordinaryLevelSubjectRepository.findAll();
         if (ordinaryLevelSubjects.isEmpty()) {
+            log.info("Subjects not exists in the system for Ordinary Level");
             return new ArrayList<>();
         }
         log.info("Fetching ordinary level subjects: {}", ResponseStatusMessages.SUCCESS);
@@ -55,13 +56,13 @@ public class OrdinaryLevelSubjectService implements OrdinaryLevelSubjectServiceI
     public void createSubject(String subject) {
         log.info("Add ordinary level subject: {}.", subject);
         this.ordinaryLevelSubjectRepository.save(new OrdinaryLevelSubjectModel(subject));
-        log.info("Creating ordinary level subject: {}.", ResponseStatusMessages.SUCCESS);
+        log.info("Creating ordinary level subject: {} {}.", subject,  ResponseStatusMessages.SUCCESS);
     }
 
     @Override
     public void deleteSubject(int subjectId) {
         log.info("Delete ordinary level subject for ID: {}.", subjectId);
         this.ordinaryLevelSubjectRepository.deleteById(subjectId);
-        log.info("Deleting ordinary level subject: {}.", ResponseStatusMessages.SUCCESS);
+        log.info("Deleting ordinary level subject: {} {}.", subjectId,  ResponseStatusMessages.SUCCESS);
     }
 }

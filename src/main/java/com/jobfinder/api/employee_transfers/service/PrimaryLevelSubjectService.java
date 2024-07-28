@@ -30,7 +30,7 @@ public class PrimaryLevelSubjectService implements PrimaryLevelSubjectServiceInt
             log.info("Subject does not exists for ID: {}", subjectId);
             return "";
         }
-        log.info("Fetching primary level subject for ID: {}", ResponseStatusMessages.SUCCESS);
+        log.info("Fetching primary level subject: {} {}.", subjectId,  ResponseStatusMessages.SUCCESS);
         return primaryLevelSubject.get().getSubject();
     }
 
@@ -39,6 +39,7 @@ public class PrimaryLevelSubjectService implements PrimaryLevelSubjectServiceInt
         log.info("Prepare primary level subjects");
         List<PrimaryLevelSubjectModel> primaryLevelSubjects = this.primaryLevelSubjectRepository.findAll();
         if (primaryLevelSubjects.isEmpty()) {
+            log.info("Subjects not exists in the system for Primary Level");
             return new ArrayList<>();
         }
         log.info("Fetching primary level subjects: {}", ResponseStatusMessages.SUCCESS);
@@ -52,13 +53,13 @@ public class PrimaryLevelSubjectService implements PrimaryLevelSubjectServiceInt
     public void createSubject(String subject) {
         log.info("Add primary level subject: {}.", subject);
         this.primaryLevelSubjectRepository.save(new PrimaryLevelSubjectModel(subject));
-        log.info("Creating primary level subject: {}.", ResponseStatusMessages.SUCCESS);
+        log.info("Creating primary level subject: {} {}.", subject,  ResponseStatusMessages.SUCCESS);
     }
 
     @Override
     public void deleteSubject(int subjectId) {
         log.info("Delete primary level subject for ID: {}.", subjectId);
         this.primaryLevelSubjectRepository.deleteById(subjectId);
-        log.info("Deleting primary level subject: {}.", ResponseStatusMessages.SUCCESS);
+        log.info("Deleting primary level subject: {} {}.", subjectId,  ResponseStatusMessages.SUCCESS);
     }
 }

@@ -1,37 +1,48 @@
 package com.jobfinder.api.employee_transfers.service;
 
-import com.jobfinder.api.employee_transfers.dto.common.JobDetailsDto;
+import com.jobfinder.api.employee_transfers.constant.ResponseStatusMessages;
+import com.jobfinder.api.employee_transfers.constant.enums.JobCategory;
+import com.jobfinder.api.employee_transfers.dto.request.JobDetailsRequestDto;
+import com.jobfinder.api.employee_transfers.dto.request.TeachingJobDetailsRequestDto;
+import com.jobfinder.api.employee_transfers.dto.response.JobDetailsResponseDto;
+import com.jobfinder.api.employee_transfers.dto.response.SuccessResponseDto;
 import com.jobfinder.api.employee_transfers.dto.teaching.TeachingJobDetailsDto;
 import com.jobfinder.api.employee_transfers.model.common.JobDetailsModel;
 import com.jobfinder.api.employee_transfers.repository.common.JobDetailsRepository;
 import com.jobfinder.api.employee_transfers.service.common.JobDetailsServiceInterface;
-import com.jobfinder.api.employee_transfers.service.teaching.TeachingJobDetailsServiceInterface;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
+@Log4j2
 @Service
 public class JobDetailsService implements JobDetailsServiceInterface {
 
     private final JobDetailsRepository jobDetailsRepository;
-    private final TeachingJobDetailsServiceInterface teachingJobDetailsService;
+    private final TeachingJobDetailsService teachingJobDetailsService;
 
     public JobDetailsService(JobDetailsRepository jobDetailsRepository,
-                             TeachingJobDetailsServiceInterface teachingJobDetailsService) {
+                             TeachingJobDetailsService teachingJobDetailsService) {
         this.jobDetailsRepository = jobDetailsRepository;
         this.teachingJobDetailsService = teachingJobDetailsService;
     }
 
     @Override
-    public JobDetailsDto getJobDetails(int userId) {
+    public JobDetailsResponseDto getJobDetails(int userId) {
+        log.info("Fetch Job Details for userID: {}", userId);
         Optional<JobDetailsModel> jobDetails = this.jobDetailsRepository.findByUserId(userId);
         if (jobDetails.isEmpty()) {
-            return new JobDetailsDto();
+            log.info("Job Details does not exists for userID: {}", userId);
+            return new JobDetailsResponseDto();
         }
-        TeachingJobDetailsDto teachingJobDetails = this.teachingJobDetailsService.getJobDetailsForUser(
+        TeachingJobDetailsRequestDto teachingJobDetails = this.teachingJobDetailsService.getJobDetailsForUser(
                 userId
         );
-        return JobDetailsDto.builder()
+        log.info("Fetching Fetch Job Details for userID: {} {}.", userId,  ResponseStatusMessages.SUCCESS);
+        return JobDetailsResponseDto.builder()
+                .userId(jobDetails.get().getUserId())
                 .seniority(jobDetails.get().getSeniority())
                 .servicePeriod(jobDetails.get().getServicePeriod())
                 .currentProvince(jobDetails.get().getCurrentProvince())
@@ -49,8 +60,11 @@ public class JobDetailsService implements JobDetailsServiceInterface {
     }
 
     @Override
-    public void addJobDetails(JobDetailsDto jobDetails) {
+    public SuccessResponseDto addJobDetails(JobDetailsRequestDto jobDetails) {
+        log.info("Add Job Details for userID: {}.", jobDetails.getUserId());
+        LocalDateTime createdAt = LocalDateTime.now();
         JobDetailsModel jobDetailsToBeSaved = JobDetailsModel.builder()
+                .userId(jobDetails.getUserId())
                 .seniority(jobDetails.getSeniority())
                 .servicePeriod(jobDetails.getServicePeriod())
                 .currentProvince(jobDetails.getCurrentProvince())
@@ -63,26 +77,46 @@ public class JobDetailsService implements JobDetailsServiceInterface {
                 .educationQualification(jobDetails.getEducationQualification())
                 .currentEmployer(jobDetails.getCurrentEmployer())
                 .category(jobDetails.getCategory())
-                .currentCity(jobDetails.getCurrentCity()).build();
+                .currentCity(jobDetails.getCurrentCity()).createdAt(createdAt)
+                .build();
         this.jobDetailsRepository.save(
                 jobDetailsToBeSaved
         );
-        this.teachingJobDetailsService.createJobDetails(TeachingJobDetailsDto.builder()
-                .userId(jobDetailsToBeSaved.getUserId())
-                .primarySubjectForALevel(jobDetails.getTeachingJobDetails().getPrimarySubjectForALevel())
-                .secondarySubjectForALevel(jobDetails.getTeachingJobDetails().getSecondarySubjectForALevel())
-                .ternarySubjectForALevel(jobDetails.getTeachingJobDetails().getTernarySubjectForALevel())
-                .primarySubjectForOLevel(jobDetails.getTeachingJobDetails().getPrimarySubjectForOLevel())
-                .secondarySubjectForOLevel(jobDetails.getTeachingJobDetails().getSecondarySubjectForOLevel())
-                .ternarySubjectForOLevel(jobDetails.getTeachingJobDetails().getTernarySubjectForOLevel())
-                .primarySubjectForPLevel(jobDetails.getTeachingJobDetails().getPrimarySubjectForPLevel())
-                .secondarySubjectForPLevel(jobDetails.getTeachingJobDetails().getSecondarySubjectForPLevel())
-                .ternarySubjectForPLevel(jobDetails.getTeachingJobDetails().getTernarySubjectForPLevel())
-                .build());
+        if (jobDetails.getCategory() == JobCategory.TEACHER) {
+            this.teachingJobDetailsService.createJobDetails(TeachingJobDetailsDto.builder()
+                    .userId(jobDetails.getUserId())
+                    .primarySubjectForALevel(jobDetails.getTeachingJobDetails().getPrimarySubjectForALevel())
+                    .secondarySubjectForALevel(jobDetails.getTeachingJobDetails().getSecondarySubjectForALevel())
+                    .ternarySubjectForALevel(jobDetails.getTeachingJobDetails().getTernarySubjectForALevel())
+                    .primarySubjectForOLevel(jobDetails.getTeachingJobDetails().getPrimarySubjectForOLevel())
+                    .secondarySubjectForOLevel(jobDetails.getTeachingJobDetails().getSecondarySubjectForOLevel())
+                    .ternarySubjectForOLevel(jobDetails.getTeachingJobDetails().getTernarySubjectForOLevel())
+                    .primarySubjectForPLevel(jobDetails.getTeachingJobDetails().getPrimarySubjectForPLevel())
+                    .secondarySubjectForPLevel(jobDetails.getTeachingJobDetails().getSecondarySubjectForPLevel())
+                    .ternarySubjectForPLevel(jobDetails.getTeachingJobDetails().getTernarySubjectForPLevel())
+                    .createdAt(createdAt)
+                    .build());
+        }
+        log.info("Adding Job Details for userID: {} {}.",
+                jobDetails.getUserId(),
+                ResponseStatusMessages.SUCCESS);
+        return new SuccessResponseDto(
+                "Job Resource",
+                "Job details record created for: " + jobDetails.getCategory(),
+                createdAt
+        );
     }
 
     @Override
-    public void deleteJobDetails(int userId) {
+    public SuccessResponseDto deleteJobDetails(int userId) {
+        log.info("Delete Job Details for userID for userID: {}.", userId);
+        LocalDateTime timeOfAction = LocalDateTime.now();
         this.jobDetailsRepository.deleteByUserId(userId);
+        log.info("Deleting Job Details for userID for userID: {} {}.", userId,  ResponseStatusMessages.SUCCESS);
+        return new SuccessResponseDto(
+                "Job Resource",
+                "Job details record deleted for userID: " + userId,
+                timeOfAction
+        );
     }
 }

@@ -1,10 +1,12 @@
 package com.jobfinder.api.employee_transfers.service.common;
 
-import com.jobfinder.api.employee_transfers.dto.common.JobDetailsDto;
+import com.jobfinder.api.employee_transfers.dto.request.JobDetailsRequestDto;
+import com.jobfinder.api.employee_transfers.dto.response.JobDetailsResponseDto;
+import com.jobfinder.api.employee_transfers.dto.response.SuccessResponseDto;
 
 public interface JobDetailsServiceInterface {
-    JobDetailsDto getJobDetails(int userId);
-    void addJobDetails(JobDetailsDto jobDetails);
+    JobDetailsResponseDto getJobDetails(int userId);
+    SuccessResponseDto addJobDetails(JobDetailsRequestDto jobDetails);
 
-    void deleteJobDetails(int userId);
+    SuccessResponseDto deleteJobDetails(int userId);
 }
