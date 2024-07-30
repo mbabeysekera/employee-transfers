@@ -1,10 +1,8 @@
 package com.jobfinder.api.employee_transfers.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jobfinder.api.employee_transfers.constant.enums.EducationQualification;
-import com.jobfinder.api.employee_transfers.constant.enums.JobCategory;
 import com.jobfinder.api.employee_transfers.constant.enums.SeniorityGrade;
-import com.jobfinder.api.employee_transfers.dto.request.TeachingJobDetailsRequestDto;
+import com.jobfinder.api.employee_transfers.dto.common.JobCategoryDetailsDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,7 +25,5 @@ public class JobDetailsResponseDto {
     private String description;
     private EducationQualification educationQualification;
     private String currentEmployer;
-    private JobCategory category;
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private TeachingJobDetailsRequestDto teachingJobDetails;
+    private JobCategoryDetailsDto<?> jobSpecificDetails;
 }

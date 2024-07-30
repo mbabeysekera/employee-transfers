@@ -18,8 +18,4 @@ public class DistrictModel {
 
     @Column(name = "district")
     private String district;
-
-    public DistrictModel(String district) {
-        this.district = district;
-    }
 }
