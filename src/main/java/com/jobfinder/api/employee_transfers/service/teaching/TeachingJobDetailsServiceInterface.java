@@ -5,6 +5,6 @@ import com.jobfinder.api.employee_transfers.dto.teaching.TeachingJobDetailsDto;
 
 public interface TeachingJobDetailsServiceInterface {
     void createJobDetails(TeachingJobDetailsDto jobDetails);
-    TeachingJobDetailsRequestDto getJobDetailsForUser(int userId);
+    TeachingJobDetailsDto getJobDetailsForUser(int userId);
     void deleteJobDetailsOfUser(int userId);
 }
