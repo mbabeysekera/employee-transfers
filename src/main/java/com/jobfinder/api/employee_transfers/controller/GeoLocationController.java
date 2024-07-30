@@ -3,9 +3,7 @@ package com.jobfinder.api.employee_transfers.controller;
 import com.jobfinder.api.employee_transfers.dto.common.CityDto;
 import com.jobfinder.api.employee_transfers.dto.common.DistrictDto;
 import com.jobfinder.api.employee_transfers.dto.common.ProvinceDto;
-import com.jobfinder.api.employee_transfers.dto.response.CityResponseDto;
-import com.jobfinder.api.employee_transfers.dto.response.DistrictResponseDto;
-import com.jobfinder.api.employee_transfers.dto.response.ProvinceResponseDto;
+import com.jobfinder.api.employee_transfers.dto.response.GeoLocationResponseDto;
 import com.jobfinder.api.employee_transfers.service.CityService;
 import com.jobfinder.api.employee_transfers.service.DistrictService;
 import com.jobfinder.api.employee_transfers.service.ProvinceService;
@@ -32,20 +30,20 @@ public class GeoLocationController {
     }
 
     @GetMapping(path = "provinces")
-    public ResponseEntity<ProvinceResponseDto> getProvinces() {
+    public ResponseEntity<GeoLocationResponseDto<ProvinceDto>> getProvinces() {
         List<ProvinceDto> provinces = this.provinceService.getProvinces();
-        return ResponseEntity.ok(new ProvinceResponseDto(provinces));
+        return ResponseEntity.ok(new GeoLocationResponseDto<>("provinces", provinces));
     }
 
     @GetMapping(path = "districts")
-    public ResponseEntity<DistrictResponseDto> getDistricts() {
+    public ResponseEntity<GeoLocationResponseDto<DistrictDto>> getDistricts() {
         List<DistrictDto> districts = this.districtService.getDistricts();
-        return ResponseEntity.ok(new DistrictResponseDto(districts));
+        return ResponseEntity.ok(new GeoLocationResponseDto<>("districts", districts));
     }
 
     @GetMapping(path = "cities")
-    public ResponseEntity<CityResponseDto> getCities() {
+    public ResponseEntity<GeoLocationResponseDto<CityDto>> getCities() {
         List<CityDto> cities = this.cityService.getCities();
-        return ResponseEntity.ok(new CityResponseDto(cities));
+        return ResponseEntity.ok(new GeoLocationResponseDto<>("cities", cities));
     }
 }
