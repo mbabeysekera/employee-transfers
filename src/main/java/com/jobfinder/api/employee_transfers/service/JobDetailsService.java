@@ -2,6 +2,7 @@ package com.jobfinder.api.employee_transfers.service;
 
 import com.jobfinder.api.employee_transfers.constant.ResponseStatusMessages;
 import com.jobfinder.api.employee_transfers.constant.enums.JobCategory;
+import com.jobfinder.api.employee_transfers.dto.common.JobCategoryDetailsDto;
 import com.jobfinder.api.employee_transfers.dto.request.JobDetailsRequestDto;
 import com.jobfinder.api.employee_transfers.dto.request.TeachingJobDetailsRequestDto;
 import com.jobfinder.api.employee_transfers.dto.response.JobDetailsResponseDto;
@@ -37,10 +38,10 @@ public class JobDetailsService implements JobDetailsServiceInterface {
             log.info("Job Details does not exists for userID: {}", userId);
             return new JobDetailsResponseDto();
         }
-        TeachingJobDetailsRequestDto teachingJobDetails = this.teachingJobDetailsService.getJobDetailsForUser(
+        TeachingJobDetailsDto teachingJobDetails = this.teachingJobDetailsService.getJobDetailsForUser(
                 userId
         );
-        log.info("Fetching Fetch Job Details for userID: {} {}.", userId,  ResponseStatusMessages.SUCCESS);
+        log.info("Fetching Fetch Job Details for userID: {} {}.", userId, ResponseStatusMessages.SUCCESS);
         return JobDetailsResponseDto.builder()
                 .userId(jobDetails.get().getUserId())
                 .seniority(jobDetails.get().getSeniority())
@@ -54,9 +55,9 @@ public class JobDetailsService implements JobDetailsServiceInterface {
                 .description(jobDetails.get().getDescription())
                 .educationQualification(jobDetails.get().getEducationQualification())
                 .currentEmployer(jobDetails.get().getCurrentEmployer())
-                .category(jobDetails.get().getCategory())
                 .currentCity(jobDetails.get().getCurrentCity())
-                .teachingJobDetails(teachingJobDetails).build();
+                .jobSpecificDetails(new JobCategoryDetailsDto<>(jobDetails.get().getCategory(), teachingJobDetails))
+                .build();
     }
 
     @Override
@@ -83,19 +84,7 @@ public class JobDetailsService implements JobDetailsServiceInterface {
                 jobDetailsToBeSaved
         );
         if (jobDetails.getCategory() == JobCategory.TEACHER) {
-            this.teachingJobDetailsService.createJobDetails(TeachingJobDetailsDto.builder()
-                    .userId(jobDetails.getUserId())
-                    .primarySubjectForALevel(jobDetails.getTeachingJobDetails().getPrimarySubjectForALevel())
-                    .secondarySubjectForALevel(jobDetails.getTeachingJobDetails().getSecondarySubjectForALevel())
-                    .ternarySubjectForALevel(jobDetails.getTeachingJobDetails().getTernarySubjectForALevel())
-                    .primarySubjectForOLevel(jobDetails.getTeachingJobDetails().getPrimarySubjectForOLevel())
-                    .secondarySubjectForOLevel(jobDetails.getTeachingJobDetails().getSecondarySubjectForOLevel())
-                    .ternarySubjectForOLevel(jobDetails.getTeachingJobDetails().getTernarySubjectForOLevel())
-                    .primarySubjectForPLevel(jobDetails.getTeachingJobDetails().getPrimarySubjectForPLevel())
-                    .secondarySubjectForPLevel(jobDetails.getTeachingJobDetails().getSecondarySubjectForPLevel())
-                    .ternarySubjectForPLevel(jobDetails.getTeachingJobDetails().getTernarySubjectForPLevel())
-                    .createdAt(createdAt)
-                    .build());
+            createJobForTeachingTransfer(jobDetails.getUserId(), jobDetails.getTeachingJobDetails(), createdAt);
         }
         log.info("Adding Job Details for userID: {} {}.",
                 jobDetails.getUserId(),
@@ -107,12 +96,31 @@ public class JobDetailsService implements JobDetailsServiceInterface {
         );
     }
 
+    private void createJobForTeachingTransfer(
+            int userId,
+            TeachingJobDetailsRequestDto teachingJobDetails,
+            LocalDateTime createdAt) {
+        this.teachingJobDetailsService.createJobDetails(TeachingJobDetailsDto.builder()
+                .userId(userId)
+                .primarySubjectForALevel(teachingJobDetails.getPrimarySubjectForALevel())
+                .secondarySubjectForALevel(teachingJobDetails.getSecondarySubjectForALevel())
+                .ternarySubjectForALevel(teachingJobDetails.getTernarySubjectForALevel())
+                .primarySubjectForOLevel(teachingJobDetails.getPrimarySubjectForOLevel())
+                .secondarySubjectForOLevel(teachingJobDetails.getSecondarySubjectForOLevel())
+                .ternarySubjectForOLevel(teachingJobDetails.getTernarySubjectForOLevel())
+                .primarySubjectForPLevel(teachingJobDetails.getPrimarySubjectForPLevel())
+                .secondarySubjectForPLevel(teachingJobDetails.getSecondarySubjectForPLevel())
+                .ternarySubjectForPLevel(teachingJobDetails.getTernarySubjectForPLevel())
+                .createdAt(createdAt)
+                .build());
+    }
+
     @Override
     public SuccessResponseDto deleteJobDetails(int userId) {
         log.info("Delete Job Details for userID for userID: {}.", userId);
         LocalDateTime timeOfAction = LocalDateTime.now();
         this.jobDetailsRepository.deleteByUserId(userId);
-        log.info("Deleting Job Details for userID for userID: {} {}.", userId,  ResponseStatusMessages.SUCCESS);
+        log.info("Deleting Job Details for userID for userID: {} {}.", userId, ResponseStatusMessages.SUCCESS);
         return new SuccessResponseDto(
                 "Job Resource",
                 "Job details record deleted for userID: " + userId,

@@ -24,8 +24,4 @@ public class CityModel {
 
     @Column(name = "longitude")
     private Float longitude;
-
-    public CityModel(String city) {
-        this.city = city;
-    }
 }

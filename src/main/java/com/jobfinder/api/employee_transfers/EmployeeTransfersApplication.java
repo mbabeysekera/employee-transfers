@@ -11,7 +11,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class EmployeeTransfersApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EmployeeTransfersApplication.class, args);
+			SpringApplication.run(EmployeeTransfersApplication.class, args);
 	}
 
 }

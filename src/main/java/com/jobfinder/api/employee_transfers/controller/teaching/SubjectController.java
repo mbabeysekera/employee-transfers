@@ -5,13 +5,11 @@ import com.jobfinder.api.employee_transfers.dto.teaching.SubjectDto;
 import com.jobfinder.api.employee_transfers.service.AdvancedLevelSubjectService;
 import com.jobfinder.api.employee_transfers.service.OrdinaryLevelSubjectService;
 import com.jobfinder.api.employee_transfers.service.PrimaryLevelSubjectService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
 @RequestMapping(path = "subject")
@@ -30,35 +28,20 @@ public class SubjectController {
     }
 
     @GetMapping(path = "primaryLevel")
-    public ResponseEntity<SubjectResponseDto> getPrimaryLevelSubjects() {
-        List<SubjectDto> subjects = this.primaryLevelSubjectService.getSubjects();
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new SubjectResponseDto(
-                        "primary",
-                        subjects
-                )
-        );
+    public ResponseEntity<SubjectResponseDto<SubjectDto>> getPrimaryLevelSubjects() {
+        return ResponseEntity.ok(new SubjectResponseDto<>("primary",
+                this.primaryLevelSubjectService.getSubjects()));
     }
 
     @GetMapping(path = "ordinaryLevel")
-    public ResponseEntity<SubjectResponseDto> getOrdinaryLevelSubjects() {
-        List<SubjectDto> subjects = this.ordinaryLevelSubjectService.getSubjects();
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new SubjectResponseDto(
-                        "ordinary",
-                        subjects
-                )
-        );
+    public ResponseEntity<SubjectResponseDto<SubjectDto>> getOrdinaryLevelSubjects() {
+        return ResponseEntity.ok(new SubjectResponseDto<>("ordinary",
+                this.ordinaryLevelSubjectService.getSubjects()));
     }
 
     @GetMapping(path = "advancedLevel")
-    public ResponseEntity<SubjectResponseDto> getAdvancedLevelSubjects() {
-        List<SubjectDto> subjects = this.advancedLevelSubjectService.getSubjects();
-        return ResponseEntity.status(HttpStatus.OK).body(
-                new SubjectResponseDto(
-                        "advanced",
-                        subjects
-                )
-        );
+    public ResponseEntity<SubjectResponseDto<SubjectDto>> getAdvancedLevelSubjects() {
+        return ResponseEntity.ok(new SubjectResponseDto<>("advanced",
+                this.advancedLevelSubjectService.getSubjects()));
     }
 }

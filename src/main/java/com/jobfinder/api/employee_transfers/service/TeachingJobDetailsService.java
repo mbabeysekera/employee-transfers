@@ -1,7 +1,6 @@
 package com.jobfinder.api.employee_transfers.service;
 
 import com.jobfinder.api.employee_transfers.constant.ResponseStatusMessages;
-import com.jobfinder.api.employee_transfers.dto.request.TeachingJobDetailsRequestDto;
 import com.jobfinder.api.employee_transfers.dto.teaching.TeachingJobDetailsDto;
 import com.jobfinder.api.employee_transfers.model.teaching.TeachingJobDetailsModel;
 import com.jobfinder.api.employee_transfers.repository.teaching.TeachingJobDetailsRepository;
@@ -44,16 +43,16 @@ public class TeachingJobDetailsService implements TeachingJobDetailsServiceInter
     }
 
     @Override
-    public TeachingJobDetailsRequestDto getJobDetailsForUser(int userId) {
+    public TeachingJobDetailsDto getJobDetailsForUser(int userId) {
         log.info("Fetch Teaching Job Details for userID: {}", userId);
         Optional<TeachingJobDetailsModel> teachingJobDetails
                 = this.teachingJobDetailsRepository.findByUserId(userId);
         if (teachingJobDetails.isEmpty()) {
             log.info("Teaching Job Details does not exists for userID: {}", userId);
-            return new TeachingJobDetailsRequestDto();
+            return new TeachingJobDetailsDto();
         }
         log.info("Fetching Teaching Job Details for userID: {} {}.", userId,  ResponseStatusMessages.SUCCESS);
-        return TeachingJobDetailsRequestDto.builder()
+        return TeachingJobDetailsDto.builder()
                 .primarySubjectForALevel(teachingJobDetails.get().getPrimarySubjectForALevel())
                 .secondarySubjectForALevel(teachingJobDetails.get().getSecondarySubjectForALevel())
                 .ternarySubjectForALevel(teachingJobDetails.get().getTernarySubjectForALevel())
