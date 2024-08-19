@@ -9,7 +9,4 @@ import java.util.Optional;
 @Repository
 public interface TeachingJobDetailsRepository extends JpaRepository<TeachingJobDetailsModel, Integer> {
 
-    Optional<TeachingJobDetailsModel> findByUserId(int userId);
-
-    void deleteByUserId(int userId);
 }

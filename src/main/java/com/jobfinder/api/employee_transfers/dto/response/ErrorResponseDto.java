@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SuccessResponseDto {
+public class ErrorResponseDto {
     private String name;
     private String description;
     @JsonFormat(shape = JsonFormat.Shape.STRING)
