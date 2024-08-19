@@ -1,20 +1,16 @@
 package com.jobfinder.api.employee_transfers.dto.teaching;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class TeachingJobDetailsDto {
-    @JsonIgnore
-    private int userId;
     private String primarySubjectForPLevel;
     private String secondarySubjectForPLevel;
     private String ternarySubjectForPLevel;
@@ -24,5 +20,6 @@ public class TeachingJobDetailsDto {
     private String primarySubjectForALevel;
     private String secondarySubjectForALevel;
     private String ternarySubjectForALevel;
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
     private LocalDateTime createdAt;
 }

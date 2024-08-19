@@ -22,10 +22,6 @@ public class TeachingJobDetailsModel {
     private int id;
 
     @NotNull
-    @Column(name = "user_id")
-    private int userId;
-
-    @NotNull
     @Column(name = "primary_subject_for_primary_level")
     private String primarySubjectForPLevel;
 
