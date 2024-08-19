@@ -2,19 +2,26 @@ package com.jobfinder.api.employee_transfers.service;
 
 import com.jobfinder.api.employee_transfers.constant.ResponseStatusMessages;
 import com.jobfinder.api.employee_transfers.constant.enums.JobCategory;
-import com.jobfinder.api.employee_transfers.dto.common.JobCategoryDetailsDto;
+import com.jobfinder.api.employee_transfers.dto.common.JobDetailsDto;
 import com.jobfinder.api.employee_transfers.dto.request.JobDetailsRequestDto;
 import com.jobfinder.api.employee_transfers.dto.request.TeachingJobDetailsRequestDto;
 import com.jobfinder.api.employee_transfers.dto.response.JobDetailsResponseDto;
 import com.jobfinder.api.employee_transfers.dto.response.SuccessResponseDto;
 import com.jobfinder.api.employee_transfers.dto.teaching.TeachingJobDetailsDto;
+import com.jobfinder.api.employee_transfers.exception.JobDetailsServiceException;
+import com.jobfinder.api.employee_transfers.map.JobDetailsMapper;
+import com.jobfinder.api.employee_transfers.map.TeachingJobDetailsMapper;
 import com.jobfinder.api.employee_transfers.model.common.JobDetailsModel;
+import com.jobfinder.api.employee_transfers.model.teaching.TeachingJobDetailsModel;
 import com.jobfinder.api.employee_transfers.repository.common.JobDetailsRepository;
 import com.jobfinder.api.employee_transfers.service.common.JobDetailsServiceInterface;
+import jakarta.transaction.Transactional;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 
 @Log4j2
@@ -31,60 +38,40 @@ public class JobDetailsService implements JobDetailsServiceInterface {
     }
 
     @Override
-    public JobDetailsResponseDto getJobDetails(int userId) {
+    public JobDetailsResponseDto<TeachingJobDetailsDto> getTeachingJobDetails(int userId) {
         log.info("Fetch Job Details for userID: {}", userId);
         Optional<JobDetailsModel> jobDetails = this.jobDetailsRepository.findByUserId(userId);
         if (jobDetails.isEmpty()) {
             log.info("Job Details does not exists for userID: {}", userId);
-            return new JobDetailsResponseDto();
+            return new JobDetailsResponseDto<>();
         }
-        TeachingJobDetailsDto teachingJobDetails = this.teachingJobDetailsService.getJobDetailsForUser(
-                userId
-        );
+        JobDetailsDto jobDetailsDto = JobDetailsMapper.INSTANCE.jobDetailsEntityToJobDetailsDto(jobDetails.get());
+        JobDetailsResponseDto<TeachingJobDetailsDto> response;
+        if (Objects.requireNonNull(jobDetails.get().getCategory()) == JobCategory.TEACHER) {
+            TeachingJobDetailsModel teachingJobDetailsModel = jobDetails.get().getTeachingJobDetailsModel();
+            response = new JobDetailsResponseDto<>(jobDetailsDto, TeachingJobDetailsMapper.INSTANCE.teachingJobDetailsModelToTeachingJobDetailsDto(
+                    teachingJobDetailsModel
+            ));
+        } else {
+            response = new JobDetailsResponseDto<>();
+        }
         log.info("Fetching Fetch Job Details for userID: {} {}.", userId, ResponseStatusMessages.SUCCESS);
-        return JobDetailsResponseDto.builder()
-                .userId(jobDetails.get().getUserId())
-                .seniority(jobDetails.get().getSeniority())
-                .servicePeriod(jobDetails.get().getServicePeriod())
-                .currentProvince(jobDetails.get().getCurrentProvince())
-                .currentDivision(jobDetails.get().getCurrentDivision())
-                .currentCity(jobDetails.get().getCurrentCity())
-                .nextCity(jobDetails.get().getNextCity())
-                .nextDivision(jobDetails.get().getNextDivision())
-                .nextProvince(jobDetails.get().getNextProvince())
-                .description(jobDetails.get().getDescription())
-                .educationQualification(jobDetails.get().getEducationQualification())
-                .currentEmployer(jobDetails.get().getCurrentEmployer())
-                .currentCity(jobDetails.get().getCurrentCity())
-                .jobSpecificDetails(new JobCategoryDetailsDto<>(jobDetails.get().getCategory(), teachingJobDetails))
-                .build();
+        return response;
     }
 
+    @Transactional
     @Override
-    public SuccessResponseDto addJobDetails(JobDetailsRequestDto jobDetails) {
+    public SuccessResponseDto addJobDetails(JobDetailsRequestDto jobDetails) throws JobDetailsServiceException {
+        if (jobDetailsRepository.findByUserId(jobDetails.getUserId()).isPresent()) {
+            throw new JobDetailsServiceException("User already have a job detail created", HttpStatus.NOT_ACCEPTABLE);
+        }
         log.info("Add Job Details for userID: {}.", jobDetails.getUserId());
         LocalDateTime createdAt = LocalDateTime.now();
-        JobDetailsModel jobDetailsToBeSaved = JobDetailsModel.builder()
-                .userId(jobDetails.getUserId())
-                .seniority(jobDetails.getSeniority())
-                .servicePeriod(jobDetails.getServicePeriod())
-                .currentProvince(jobDetails.getCurrentProvince())
-                .currentDivision(jobDetails.getCurrentDivision())
-                .currentCity(jobDetails.getCurrentCity())
-                .nextCity(jobDetails.getNextCity())
-                .nextDivision(jobDetails.getNextDivision())
-                .nextProvince(jobDetails.getNextProvince())
-                .description(jobDetails.getDescription())
-                .educationQualification(jobDetails.getEducationQualification())
-                .currentEmployer(jobDetails.getCurrentEmployer())
-                .category(jobDetails.getCategory())
-                .currentCity(jobDetails.getCurrentCity()).createdAt(createdAt)
-                .build();
-        this.jobDetailsRepository.save(
-                jobDetailsToBeSaved
-        );
         if (jobDetails.getCategory() == JobCategory.TEACHER) {
-            createJobForTeachingTransfer(jobDetails.getUserId(), jobDetails.getTeachingJobDetails(), createdAt);
+            jobDetails.getTeachingJobDetails().setCreatedAt(createdAt);
+            TeachingJobDetailsModel teachingJobDetailsModel =
+                    this.createJobForTeachingTransfer(jobDetails.getTeachingJobDetails());
+            this.createJobDetailsWithTeachingJobDetails(jobDetails, teachingJobDetailsModel);
         }
         log.info("Adding Job Details for userID: {} {}.",
                 jobDetails.getUserId(),
@@ -96,23 +83,19 @@ public class JobDetailsService implements JobDetailsServiceInterface {
         );
     }
 
-    private void createJobForTeachingTransfer(
-            int userId,
-            TeachingJobDetailsRequestDto teachingJobDetails,
-            LocalDateTime createdAt) {
-        this.teachingJobDetailsService.createJobDetails(TeachingJobDetailsDto.builder()
-                .userId(userId)
-                .primarySubjectForALevel(teachingJobDetails.getPrimarySubjectForALevel())
-                .secondarySubjectForALevel(teachingJobDetails.getSecondarySubjectForALevel())
-                .ternarySubjectForALevel(teachingJobDetails.getTernarySubjectForALevel())
-                .primarySubjectForOLevel(teachingJobDetails.getPrimarySubjectForOLevel())
-                .secondarySubjectForOLevel(teachingJobDetails.getSecondarySubjectForOLevel())
-                .ternarySubjectForOLevel(teachingJobDetails.getTernarySubjectForOLevel())
-                .primarySubjectForPLevel(teachingJobDetails.getPrimarySubjectForPLevel())
-                .secondarySubjectForPLevel(teachingJobDetails.getSecondarySubjectForPLevel())
-                .ternarySubjectForPLevel(teachingJobDetails.getTernarySubjectForPLevel())
-                .createdAt(createdAt)
-                .build());
+    private TeachingJobDetailsModel createJobForTeachingTransfer(
+            TeachingJobDetailsRequestDto teachingJobDetails) {
+        return this.teachingJobDetailsService.createJobDetails(teachingJobDetails);
+    }
+
+    private void createJobDetailsWithTeachingJobDetails(JobDetailsRequestDto jobDetails,
+                                                        TeachingJobDetailsModel teachingJobDetailsModel) {
+        JobDetailsModel jobDetailsToBeSaved = JobDetailsMapper.INSTANCE.jobDetailsDtoToJobDetailsModel(
+                jobDetails
+        );
+        jobDetailsToBeSaved.setCreatedAt(teachingJobDetailsModel.getCreatedAt());
+        jobDetailsToBeSaved.setTeachingJobDetailsModel(teachingJobDetailsModel);
+        this.jobDetailsRepository.save(jobDetailsToBeSaved);
     }
 
     @Override

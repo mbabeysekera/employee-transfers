@@ -3,6 +3,7 @@ package com.jobfinder.api.employee_transfers.model.common;
 import com.jobfinder.api.employee_transfers.constant.enums.EducationQualification;
 import com.jobfinder.api.employee_transfers.constant.enums.JobCategory;
 import com.jobfinder.api.employee_transfers.constant.enums.SeniorityGrade;
+import com.jobfinder.api.employee_transfers.model.teaching.TeachingJobDetailsModel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -82,4 +83,8 @@ public class JobDetailsModel {
     @NotNull
     @Column(name = "created_at")
     private LocalDateTime createdAt;
+
+    @OneToOne(optional = false, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "teaching_job_id", referencedColumnName = "id")
+    private TeachingJobDetailsModel teachingJobDetailsModel;
 }

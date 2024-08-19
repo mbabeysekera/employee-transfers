@@ -1,15 +1,15 @@
 package com.jobfinder.api.employee_transfers.dto.response;
 
-import com.jobfinder.api.employee_transfers.dto.common.JobDetailsDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobDetailsResponseDto<J> {
-
-    private JobDetailsDto jobDetails;
-    private J categoryDetails;
+public class FindMatchingAdsResponseDto<F> {
+    private String description;
+    private List<JobDetailsResponseDto<F>> data;
 }

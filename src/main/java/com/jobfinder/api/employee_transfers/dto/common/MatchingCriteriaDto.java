@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JobCategoryDetailsDto<T> {
-    private T details;
+public class MatchingCriteriaDto {
+    private String nextProvinceLookingFor;
+    private String nextDivisionLookingFor;
+    private String nextCityLookingFor;
 }
